@@ -1,0 +1,11 @@
+.venv
+__pycache__
+*.pyc
+.git
+.env
+data/vector_store 
+backend/.venv/
+backend/__pycache__/
+frontend/node_modules/
+.git/
+# Agar aap local data container mein nahi bhejna chahte
