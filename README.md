@@ -1,2 +1,185 @@
+# 🏥 MediCare AI — Medical RAG Chatbot
 
-# 🏥 MediCare AI — Medical RAG Chatbot <div align="center"> ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python) ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi) ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react) ![LangChain](https://img.shields.io/badge/LangChain-0.2-green?style=flat-square) ![ChromaDB](https://img.shields.io/badge/ChromaDB-0.5-orange?style=flat-square) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=flat-square&logo=postgresql) ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker) **A production-ready Full Stack AI Chatbot powered by Retrieval-Augmented Generation (RAG)** *Ask medical questions — get precise answers from a curated clinical knowledge base* [Live Demo](#) · [Report Bug](#) · [Request Feature](#) </div> --- ## 📋 Table of Contents - [Overview](#overview) - [Features](#features) - [Tech Stack](#tech-stack) - [Architecture](#architecture) - [Getting Started](#getting-started) - [API Endpoints](#api-endpoints) - [Project Structure](#project-structure) - [Knowledge Base](#knowledge-base) - [Screenshots](#screenshots) - [Author](#author) --- ## 🎯 Overview MediCare AI is a **Full Stack Medical Knowledge Chatbot** that uses **Retrieval-Augmented Generation (RAG)** to answer clinical questions from a curated set of medical documents. Unlike generic LLMs that hallucinate, MediCare AI only answers from verified medical PDFs — making it reliable for healthcare professionals. > **Key Insight:** The RAG pipeline retrieves the most relevant document chunks, feeds them as context to Groq's LLaMA 3.3 70B model, and returns precise, grounded answers. --- ## ✨ Features - 🔐 **JWT Authentication** — Secure login/register with bcrypt password hashing - 💬 **RAG-Powered Chat** — Answers grounded in real medical documents - 🗄️ **Chat History** — Persistent chat history per user (PostgreSQL) - 🎨 **Dark Theme UI** — Professional medical-grade interface (React) - 📚 **8 Medical Knowledge PDFs** — Covering diseases, drugs, diagnostics, emergencies & more - 🐳 **Docker Ready** — One command deployment with docker-compose - ⚡ **Groq LLM** — Ultra-fast inference with LLaMA 3.3 70B - 🔍 **Semantic Search** — ChromaDB vector store with cosine similarity --- ## 🛠️ Tech Stack ### Backend | Technology | Purpose | |------------|---------| | FastAPI | REST API framework | | LangChain | RAG pipeline orchestration | | ChromaDB | Vector database for embeddings | | SentenceTransformers | Text embedding (all-MiniLM-L6-v2) | | Groq + LLaMA 3.3 70B | LLM for answer generation | | PostgreSQL + SQLAlchemy | User data & chat history | | JWT (python-jose) | Authentication tokens | | PyMuPDF | PDF document loading | | Docker | Containerization | ### Frontend | Technology | Purpose | |------------|---------| | React 18 | UI framework | | React Router | Client-side routing | | Axios | HTTP client with interceptors | | Vite | Build tool | --- ## 🏗️ Architecture ``` ┌─────────────────────────────────────────────────────┐ │                   React Frontend                     │ │         Login / Register / Chat / History            │ └──────────────────────┬──────────────────────────────┘ │ HTTP (JWT) ┌──────────────────────▼──────────────────────────────┐ │                  FastAPI Backend                     │ │     /api/auth/*  │  /api/chat  │  /api/chat/history  │ └──────┬───────────┴──────┬──────┴────────────────────┘ │                  │ ┌──────▼──────┐   ┌───────▼────────────────────────────┐ │ PostgreSQL  │   │         RAG Pipeline                │ │  Users      │   │                                     │ │  ChatHistory│   │  Query → Embedding → ChromaDB       │ └─────────────┘   │  → Top-K Chunks → Groq LLM          │ │  → Grounded Answer                  │ └─────────────────────────────────────┘ ``` --- ## 🚀 Getting Started ### Prerequisites - Python 3.11+ - Node.js 20+ - PostgreSQL 15+ - Docker (optional) ### Option 1 — Docker (Recommended) ```bash # Clone the repository git clone https://github.com/TashifToor/medicare-ai.git cd medicare-ai # Add your API keys cp .env.example .env # Edit .env and add GROQ_API_KEY and SECRET_KEY # Run everything docker-compose up --build ``` Open `http://localhost` in your browser ✅ --- ### Option 2 — Manual Setup #### Backend ```bash cd backend # Create virtual environment python -m venv .venv .venv\Scripts\activate  # Windows # source .venv/bin/activate  # Linux/Mac # Install dependencies pip install -r requirements.txt # Setup environment variables cp .env.example .env # Edit .env with your values # Run backend uvicorn main:app --reload ``` #### Frontend ```bash cd frontend # Install dependencies npm install # Run frontend npm run dev ``` --- ## 🔑 Environment Variables Create a `.env` file in the `backend/` folder: ```env DATABASE_URL=postgresql://postgres:password@localhost:5432/medicare_db GROQ_API_KEY=your_groq_api_key_here SECRET_KEY=your-super-secret-jwt-key HF_TOKEN=your_huggingface_token_here ``` Get your free Groq API key at: [console.groq.com](https://console.groq.com) --- ## 📡 API Endpoints ### Authentication | Method | Endpoint | Description | |--------|----------|-------------| | POST | `/api/auth/register` | Register new user | | POST | `/api/auth/login` | Login & get JWT token | | GET | `/api/auth/me` | Get current user profile | ### Chat | Method | Endpoint | Description | |--------|----------|-------------| | POST | `/api/chat` | Send query, get RAG answer | | GET | `/api/chat/history` | Get user's chat history | | DELETE | `/api/chat/history` | Clear chat history | ### Health | Method | Endpoint | Description | |--------|----------|-------------| | GET | `/health` | API health check | Interactive API docs available at: `http://localhost:8000/docs` --- ## 📁 Project Structure ``` medicare-ai/ ├── backend/ │   ├── core/ │   ├── middleware/ │   │   └── auth.py          # JWT authentication │   ├── models/ │   │   ├── database.py      # SQLAlchemy setup │   │   ├── user.py          # User model │   │   └── chat.py          # Chat history model │   ├── routes/ │   │   ├── auth.py          # Auth endpoints │   │   └── chat.py          # Chat endpoints │   ├── schemas/ │   │   ├── auth.py          # Pydantic schemas │   │   └── chat.py          # Pydantic schemas │   ├── data/ │   │   ├── pdf/             # Medical knowledge PDFs │   │   └── vector_store/    # ChromaDB persistent storage │   ├── pipeline.py          # RAG pipeline │   ├── main.py              # FastAPI app │   ├── requirements.txt │   └── Dockerfile │ ├── frontend/ │   ├── src/ │   │   ├── api/ │   │   │   └── axios.js     # Axios instance + interceptors │   │   ├── context/ │   │   │   └── AuthContext.jsx │   │   ├── components/ │   │   │   └── ProtectedRoute.jsx │   │   ├── pages/ │   │   │   ├── Login.jsx │   │   │   ├── Register.jsx │   │   │   └── Chat.jsx │   │   └── App.jsx │   ├── nginx.conf │   └── Dockerfile │ ├── docker-compose.yml ├── .env.example ├── .gitignore └── README.md ``` --- ## 📚 Knowledge Base The chatbot is trained on **8 comprehensive medical PDFs**: | # | Document | Topics Covered | |---|----------|---------------| | 01 | Common Diseases & Symptoms | Influenza, Pneumonia, HTN, AMI, Diabetes | | 02 | Drug Information & Pharmacology | Analgesics, Antibiotics, Antihypertensives | | 03 | Medical Procedures & Diagnostics | CBC, ECG, CT, Lab interpretation | | 04 | Emergency Medicine & First Aid | CPR, Anaphylaxis, Stroke, Triage | | 05 | Nutrition & Preventive Medicine | Diet, Screening, Vaccination | | 06 | Mental Health & Psychiatry | Depression, Anxiety, Schizophrenia | | 07 | Paediatric Medicine | Milestones, Fever, Bronchiolitis | | 08 | Chronic Disease Management | Diabetes, Heart Failure, CKD, COPD | --- ## 💡 Sample Questions ``` "What are the symptoms of diabetes mellitus?" "How is anaphylaxis treated?" "What is the normal range for WBC count?" "How do you perform CPR on an adult?" "What medications are used for hypertension?" "What are the developmental milestones for a 2-year-old?" ``` --- ## 🔄 RAG Pipeline Flow ``` User Query ↓ SentenceTransformer (all-MiniLM-L6-v2) ↓ Query Embedding (384-dim vector) ↓ ChromaDB Similarity Search ↓ Top-K Relevant Chunks ↓ Prompt: Context + Question ↓ Groq LLaMA 3.3 70B ↓ Grounded Medical Answer ``` --- ## 👨‍💻 Author **Muhammad Tashif Munir Toor** - 🎓 BS.IT Student — University of Punjab, Lahore - 💼 AI/ML Intern — Word Wise Solutions - 🌐 Portfolio: [tashif-portfolio.vercel.app](https://tashif-portfolio.vercel.app) - 💻 GitHub: [@TashifToor](https://github.com/TashifToor) - 📧 Email: tashiftoor12345@gmail.com - 💼 Fiverr: Available for custom RAG chatbot development --- ## ⚠️ Disclaimer This chatbot is for **informational and educational purposes only**. It does not constitute medical advice. Always consult a qualified healthcare professional for diagnosis and treatment decisions. --- <div align="center"> Made with ❤️ by Muhammad Tashif Munir Toor ⭐ Star this repo if you found it useful! </div>
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![LangChain](https://img.shields.io/badge/LangChain-0.2-green?style=for-the-badge&logo=chainlink&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-0.5-orange?style=for-the-badge&logo=googlecloud&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+**A production-ready Full Stack AI Chatbot powered by Retrieval-Augmented Generation (RAG)**  
+*Ask medical questions — get precise answers from a curated clinical knowledge base.*
+
+[Live Demo](#) · [Report Bug](#) · [Request Feature](#)
+
+</div>
+
+---
+
+## 📋 Table of Contents
+* [Overview](#-overview)
+* [Features](#-features)
+* [Tech Stack](#-tech-stack)
+* [Architecture](#-architecture)
+* [Getting Started](#-getting-started)
+* [Environment Variables](#-environment-variables)
+* [API Endpoints](#-api-endpoints)
+* [Project Structure](#-project-structure)
+* [Knowledge Base](#-knowledge-base)
+* [RAG Pipeline Flow](#-rag-pipeline-flow)
+* [Author](#-author)
+* [Disclaimer](#-disclaimer)
+
+---
+
+## 🎯 Overview
+
+**MediCare AI** is an enterprise-grade medical knowledge chatbot utilizing state-of-the-art **Retrieval-Augmented Generation (RAG)** architectures. Engineered to eliminate LLM hallucinations, the platform restricts its context strictly to verified, peer-reviewed clinical data and internal documents, ensuring precise, grounded insights for healthcare exploration.
+
+> 💡 **Core Mechanics:** The system dynamically captures user queries, vectorizes them to query a local high-performance vector store, extracts targeted content chunks, and pipes them into Groq's LLaMA 3.3 70B engine for deterministic response compilation.
+
+---
+
+## ✨ Features
+
+* 🔐 **Secure AAA Lifecycle** — JWT validation coupled with salted `bcrypt` storage profiles.
+* 💬 **Context-Grounded Chat** — RAG architecture natively prevents information hallucination.
+* 🗄️ **Persistent State Engine** — Multi-user session tracking managed securely inside PostgreSQL.
+* 🎨 **Medical-Grade Experience** — High-contrast, clean dark theme client optimized for multi-device viewports.
+* 📚 **Configured Knowledge Base** — 8 comprehensive core blueprints containing diagnostic data pre-indexed.
+* 🐳 **Immutable Deployments** — Full Docker container configurations for production scaling.
+* ⚡ **Sub-Second Inference** — Backed by Groq's high-throughput LLaMA 3.3 runtime framework.
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend Services
+* **Framework:** FastAPI (Asynchronous High-Performance Routing)
+* **Orchestration:** LangChain v0.2 (Agentic and Tool-Chaining Framework)
+* **Vector Store:** ChromaDB v0.5 (High-Density Vector Storage)
+* **Embeddings:** SentenceTransformers (`all-MiniLM-L6-v2`)
+* **Inference Core:** Groq Cloud SDK + LLaMA 3.3 70B
+* **Relational Store:** PostgreSQL Engine + SQLAlchemy ORM
+
+### Frontend Client
+* **Core Engine:** React 18 & Vite (Blazing Fast Asset Compilation)
+* **Navigation:** React Router DOM v6
+* **Data Transport:** Axios (Configured with automated Token Interceptors)
+
+---
+
+## 🏗️ Architecture
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                          React Frontend                         │
+│             (Login / Register / Chat View / History)            │
+└────────────────────────────────┬────────────────────────────────┘
+                                 │ HTTP REST (Bearer JWT)
+┌────────────────────────────────▼────────────────────────────────┐
+│                         FastAPI Backend                         │
+│      [/api/auth/*]       │      [/api/chat]      │  [/api/history]│
+└──────┬───────────────────┴──────┬────────────────┴────────────────┘
+       │                          │
+┌──────▼──────┐            ┌──────▼────────────────────────────────┐
+│ PostgreSQL  │            │              RAG Pipeline             │
+│ ──────────  │            │  Query ➔ Vectorization ➔ ChromaDB     │
+│ Users Schema│            │  ➔ Context Retrieval  ➔ Groq LLM      │
+│ History Log │            │  ➔ Deterministic Grounded Compilation │
+└─────────────┘            └───────────────────────────────────────┘
+🚀 Getting StartedOption 1: Docker Compose (Recommended)Run the entire ecosystem natively inside isolation layers with a single script execution:Bash# Clone the remote tracking repository
+git clone [https://github.com/TashifToor/medicare-ai.git](https://github.com/TashifToor/medicare-ai.git)
+cd medicare-ai
+
+# Initialize execution configurations
+cp .env.example .env
+
+# Spin up services
+docker-compose up --build
+Access the interface instantly at: http://localhost ✅Option 2: Bare-Metal Setup🟢 Backend SetupBashcd backend
+
+# Initialize isolated runtime environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+
+# Inject dependencies
+pip install -r requirements.txt
+
+# Configure environments and launch
+cp .env.example .env
+uvicorn main:app --reload --port 8000
+🔵 Frontend SetupBashcd frontend
+
+# Install package dependencies
+npm install
+
+# Run Vite deployment development pipeline
+npm run dev
+🔑 Environment VariablesCreate a detailed configuration matrix inside your backend/.env file:Code snippetDATABASE_URL=postgresql://postgres:password@localhost:5432/medicare_db
+GROQ_API_KEY=your_groq_api_key_here
+SECRET_KEY=your-super-secret-jwt-key
+HF_TOKEN=your_huggingface_token_here
+🛈 Access API keys directly via console.groq.com.📡 API EndpointsIdentity ManagementMethodEndpointDescriptionPOST/api/auth/registerRegisters a unique user instance inside persistent schemaPOST/api/auth/loginValidates credentials and challenges back authorization tokensGET/api/auth/meProcesses signature states to deliver payload profilesChat OrchestrationMethodEndpointDescriptionPOST/api/chatTransmits runtime payload inputs to RAG engineGET/api/chat/historyFetches historical log array tied to token session keysDELETE/api/chat/historyDrops structured relational indices for clean context resetsPlatform IntegrityMethodEndpointDescriptionGET/healthValidates target routing state across operational vectorsSwagger UI is auto-generated and exposed at: http://localhost:8000/docs📁 Project StructurePlaintextmedicare-ai/
+├── backend/
+│   ├── core/              # Global Core Configurations
+│   ├── middleware/        # Authorization Interceptors
+│   │   └── auth.py        # Token Signatures & Context Handling
+│   ├── models/            # SQLAlchemy Database Schemas
+│   │   ├── database.py    # DB Connection Pooling Setup
+│   │   ├── user.py        # Relational User Profiles
+│   │   └── chat.py        # Relational Session Stores
+│   ├── routes/            # FastAPI Endpoint Controllers
+│   │   ├── auth.py        # Authentication Logic
+│   │   └── chat.py        # Core RAG Processing Controllers
+│   ├── schemas/           # Pydantic Structural Contracts
+│   ├── data/              # Storage Volume Laydowns
+│   │   ├── pdf/           # Embedded Source Medical Matrix Documentation
+│   │   └── vector_store/  # ChromaDB Binary File Allocation System
+│   ├── pipeline.py        # Main Vector RAG Processing Orchestrator
+│   ├── main.py            # Primary Entry Point
+│   ├── requirements.txt   # Dependencies Matrix
+│   └── Dockerfile         # Python Build Layer Blueprint
+├── frontend/
+│   ├── src/
+│   │   ├── api/           # Base Axios Transport Configurations
+│   │   ├── context/       # Auth Global State Providers
+│   │   ├── components/    # Reusable Interface Modules
+│   │   └── pages/         # Application Main View Ports
+│   ├── nginx.conf         # Static SPA Host Routing Engine Configuration
+│   └── Dockerfile         # Multi-Stage Production SPA Builder
+└── docker-compose.yml     # Multi-Container Application Stack Orchestrator
+📚 Knowledge BaseThe vector lookup engine handles semantic extraction against these 8 core domains:Reference IndexKnowledge Document File targetDomain & Structural Coverage01Common Diseases & SymptomsPathologies: Influenza, Pneumonia, HTN, AMI, Diabetes Mellitus02Drug Info & PharmacologyApplications: Analgesics, Antibiotics, Antihypertensives, Contraindications03Medical ProceduresDiagnostics: Complete Blood Count, ECG, CT-Scan Interpretations04Emergency MedicineDirect Actions: Advanced Life Support Protocols, Anaphylaxis, Stroke Triage05Preventive MedicineOutlines: Dietetics, Systematic Profiling, Global Immunization Rules06Mental HealthDiagnostics: Clinical Depressive States, Generalized Anxiety, Mood Disorders07Paediatric MedicineCheckpoints: Milestone Matrix Tracking, Febrile Management, Respiratory Syncytial08Chronic ManagementParadigms: Long-term Care Plans, Advanced Heart Failure, Chronic Kidney Insufficiency🔄 RAG Pipeline FlowPlaintext  [ User Query Inbound ]
+            │
+            ▼
+┌─────────────────────────┐
+│ SentenceTransformer Model│ ➔ Converts text to a high-density vector
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│ ChromaDB Semantic Search│ ➔ Calculates Cosine Similarity profiles
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│ Context Chunk Isolation │ ➔ Extracts top-K most relevant reference chunks
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│   Structured Prompting  │ ➔ Merges Context + Original Intent Payload
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│   Groq LLaMA 3.3 70B    │ ➔ High-speed factual text generation
+└───────────┬─────────────┘
+            │
+            ▼
+  [ Verified Medical Answer ]
+👨‍💻 AuthorMuhammad Tashif Munir ToorAcademic Profile: BS Information Technology — University of the Punjab, Lahore 🇵🇰Professional Track: Backend & AI Engineer Intern — M1Portfolio Hub: tashif-portfolio.vercel.appGitHub Engine: @TashifToorBusiness Contact: tashiftoor12345@gmail.com
+
