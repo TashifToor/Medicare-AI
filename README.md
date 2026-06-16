@@ -62,7 +62,7 @@
 * **Orchestration:** LangChain v0.2 (Agentic and Tool-Chaining Framework)
 * **Vector Store:** ChromaDB v0.5 (High-Density Vector Storage)
 * **Embeddings:** SentenceTransformers (`all-MiniLM-L6-v2`)
-* **Inference Core:** Groq Cloud SDK + LLaMA 3.3 70B
+* **Inference Core:** Groq Cloud SDK + LLaMA 3.3 70B Model
 * **Relational Store:** PostgreSQL Engine + SQLAlchemy ORM
 
 ### Frontend Client
