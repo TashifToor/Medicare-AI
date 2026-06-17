@@ -37,7 +37,7 @@
 
 ## 🎯 Overview
 
-**MediCare AI** is an enterprise-grade medical knowledge chatbot utilizing state-of-the-art **Retrieval-Augmented Generation (RAG)** architectures. Engineered to eliminate LLM hallucinations, the platform restricts its context strictly to verified, peer-reviewed clinical data and internal documents, ensuring precise, grounded insights for healthcare exploration.
+**MediCare AI** is an Enterprise-Grade Medical Knowledge Chatbot utilizing state-of-the-art **Retrieval-Augmented Generation (RAG)** architectures. Engineered to eliminate LLM hallucinations, the platform restricts its context strictly to verified, peer-reviewed clinical data and internal documents, ensuring precise, grounded insights for healthcare exploration.
 
 > 💡 **Core Mechanics:** The system dynamically captures user queries, vectorizes them to query a local high-performance vector store, extracts targeted content chunks, and pipes them into Groq's LLaMA 3.3 70B engine for deterministic response compilation.
 
